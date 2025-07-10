@@ -1,4 +1,5 @@
 package com.example.excel_to_ADO;
+import org.azd.exceptions.AzDException;
 import org.azd.utils.AzDClientApi;
 
 
@@ -28,5 +29,26 @@ public class DataSender {
     //#endregion
 
     //#region Public methods
+
+    // Connection tested by attempting to get my memberID based on my name
+    public boolean isConnectionSuccessful(){
+        try {
+            var mem = webApi.getMemberEntitlementManagementApi();
+
+            String memberId = mem
+                    .getUserEntitlements()
+                    .getMembers()
+                    .stream()
+                    .filter(x -> x.getUser().getDisplayName().contains("Kokkinos"))
+                    .findFirst()
+                    .get()
+                    .getId();
+            System.out.printf("Connection successful. Georgios Kokkinos Member ID is %s", memberId);
+            return true;
+        } catch (AzDException e) {
+            System.out.printf("Connection failed! \n %s\n", e.getMessage());
+            return false;
+        }
+    }
 
 }
