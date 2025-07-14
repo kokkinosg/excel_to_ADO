@@ -11,8 +11,13 @@ public class Main {
         client.testConnection();
 
         // Test the work item ID finder
-        String workItemTitle = "It shall be possible to validate Bootstrap camera images for image exposure";
-        System.out.printf("ID: %d - Title: %s",client.getWorkItemID(workItemTitle),workItemTitle);
+        // String workItemTitle = "It shall be possible to validate Bootstrap camera images for image exposure";
+        // System.out.printf("ID: %d - Title: %s",client.getWorkItemID(workItemTitle),workItemTitle);
+
+        // Create a sample work item
+        client.createWorkItem("User-Story", "TEST_PARENT_GK_1407025", "sample acceptance criteria", null, null);
+        // Create a child of the sample work item using Hierarchy-Reverse
+        client.createWorkItem("User-Story", "TEST_CHILD_GK_1407025", "sample acceptance criteria", 16458, "Hierarchy-Reverse");
         
     }
     

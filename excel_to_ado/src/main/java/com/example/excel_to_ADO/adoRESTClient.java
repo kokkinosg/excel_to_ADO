@@ -1,6 +1,7 @@
 package com.example.excel_to_ADO;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
@@ -156,14 +157,19 @@ public class adoRESTClient {
 
     // Method to create a work item of a specified type, title, acceptance criteria and specific links to other work items. 
     public boolean createWorkItem(String workItemType, String title, String acceptanceCriteria, Integer relatedID, String relationType){
+
+        // Change the type so that it matches what devops expects.
+        String type = URLEncoder.encode(workItemType, StandardCharsets.UTF_8).replace("-", "%20");
+        
         // Create the URL
         HttpUrl url = HttpUrl.parse(String.format(
-                "https://dev.azure.com/%s/%s/_apis/wit/workitems/%s?api-version=%s",
-                organisationName, projectName, workItemType, apiVersion));
+                "https://dev.azure.com/%s/%s/_apis/wit/workitems/$%s?api-version=%s",
+                organisationName, projectName, type, apiVersion));
 
         // Invoke the helper function to create the patch for the request. 
         // JSON Patch is still JSON, but with a special structure: an array of {op, path, value} objects.
-        JsonArray patch = createJsonArray(workItemType, title, acceptanceCriteria, relatedID, relationType);
+        JsonArray patch = createJsonArray(title, acceptanceCriteria, relatedID, relationType);
+
 
         // Build a POST request object and include the query. 
         Request req = new Request.Builder()
@@ -193,7 +199,7 @@ public class adoRESTClient {
             // Retrieve the ID of the created WI.
             int newId = json.get("id").getAsInt();
             
-            System.out.printf("✔ Created work-item #%d (%s)\n", newId, workItemType);
+            System.out.printf("\n ✔ Created work-item #%d (%s)\n", newId, workItemType);
             return true;
         } catch (IOException e) {
             System.err.printf("✖ Create error - %s%n", e.getMessage());
@@ -202,7 +208,10 @@ public class adoRESTClient {
     }
 
     // Helper method to create a JSON array object for creatin work items
-    private JsonArray createJsonArray(String workItemType, String title, String acceptanceCriteria, Integer relatedID, String relationType){
+    // PARENT("System.LinkTypes.Hierarchy-Forward"),
+    // CHILD ("System.LinkTypes.Hierarchy-Reverse"),
+    // RELATED("System.LinkTypes.Related");   
+    private JsonArray createJsonArray(String title, String acceptanceCriteria, Integer relatedID, String relationType){
         // Create a JSON Array with the required info 
         JsonArray patch = new JsonArray();
 
