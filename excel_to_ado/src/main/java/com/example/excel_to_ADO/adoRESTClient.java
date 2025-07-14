@@ -199,7 +199,7 @@ public class adoRESTClient {
             // Retrieve the ID of the created WI.
             int newId = json.get("id").getAsInt();
             
-            System.out.printf("\n ✔ Created work-item #%d (%s)\n", newId, workItemType);
+            System.out.printf("\n✔ Created work-item #%d (%s)\n", newId, workItemType);
             return true;
         } catch (IOException e) {
             System.err.printf("✖ Create error - %s%n", e.getMessage());

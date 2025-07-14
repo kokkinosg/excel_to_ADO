@@ -16,8 +16,10 @@ public class Main {
 
         // Create a sample work item
         client.createWorkItem("User-Story", "TEST_PARENT_GK_1407025", "sample acceptance criteria", null, null);
+        // Get its ID
+        Integer id = client.getWorkItemID("TEST_PARENT_GK_1407025");
         // Create a child of the sample work item using Hierarchy-Reverse
-        client.createWorkItem("User-Story", "TEST_CHILD_GK_1407025", "sample acceptance criteria", 16458, "Hierarchy-Reverse");
+        client.createWorkItem("User-Story", "TEST_CHILD_GK_1407025", "sample acceptance criteria", id, "Hierarchy-Reverse");
         
     }
     
