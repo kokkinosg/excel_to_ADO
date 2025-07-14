@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // Instantiate the data sender class
+        // Instantiate the client class
         adoRESTClient client = new adoRESTClient();
 
         // Check whether the connection is succesfull 
