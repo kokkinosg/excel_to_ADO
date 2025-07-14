@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -92,12 +93,12 @@ public class adoRESTClient {
         }
     }
 
-    // Method to create obtain the ID of a workitem using its exact title and a querry.
+    // Method to obtain the ID of a workitem using its exact title and a query.
     public Integer getWorkItemID(String workItemTitle){
         // Create the URL
         HttpUrl url = HttpUrl.parse(String.format(
-                "https://dev.azure.com/%s/%s/_apis/wit/wiql?api-version=7.1",
-                organisationName, projectName));
+                "https://dev.azure.com/%s/%s/_apis/wit/wiql?api-version=%s",
+                organisationName, projectName, apiVersion));
 
         // Build a query (WIQL) – escape single quotes for safety
         String wiql = String.format(
@@ -153,4 +154,95 @@ public class adoRESTClient {
         }
     }
 
+    // Method to create a work item of a specified type, title, acceptance criteria and specific links to other work items. 
+    public boolean createWorkItem(String workItemType, String title, String acceptanceCriteria, Integer relatedID, String relationType){
+        // Create the URL
+        HttpUrl url = HttpUrl.parse(String.format(
+                "https://dev.azure.com/%s/%s/_apis/wit/workitems/%s?api-version=%s",
+                organisationName, projectName, workItemType, apiVersion));
+
+        // Invoke the helper function to create the patch for the request. 
+        // JSON Patch is still JSON, but with a special structure: an array of {op, path, value} objects.
+        JsonArray patch = createJsonArray(workItemType, title, acceptanceCriteria, relatedID, relationType);
+
+        // Build a POST request object and include the query. 
+        Request req = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", Credentials.basic("", personalAccessToken))
+                .addHeader("Content-Type", "application/json-patch+json")
+                .post(RequestBody.create(patch.toString().getBytes(StandardCharsets.UTF_8)))
+                .build();
+        
+        try (Response resp = client.newCall(req).execute()) {
+
+            if (!resp.isSuccessful()) {
+                System.err.printf("✖ Work-item create failed. HTTP %d %s%n", resp.code(), resp.body() != null ? resp.body().string() : "<no body>");
+                return false;
+            }
+
+            // If we are succesfull then analyse the response body 
+            String body;
+            if (resp.body() != null) {
+                body = resp.body().string();   // read the response stream to a String
+            } else {
+                body = "{}";                   // fall back to an empty JSON object literal
+            }
+
+            // Create a json object which is interogatable.
+            JsonObject json = JsonParser.parseString(body).getAsJsonObject();
+            // Retrieve the ID of the created WI.
+            int newId = json.get("id").getAsInt();
+            
+            System.out.printf("✔ Created work-item #%d (%s)\n", newId, workItemType);
+            return true;
+        } catch (IOException e) {
+            System.err.printf("✖ Create error - %s%n", e.getMessage());
+            return false;
+        }
+    }
+
+    // Helper method to create a JSON array object for creatin work items
+    private JsonArray createJsonArray(String workItemType, String title, String acceptanceCriteria, Integer relatedID, String relationType){
+        // Create a JSON Array with the required info 
+        JsonArray patch = new JsonArray();
+
+        // Add the tile
+        JsonObject opTitle = new JsonObject();
+        opTitle.addProperty("op", "add"); // Define the patch operation. Here we are adding. 
+        opTitle.addProperty("path", "/fields/System.Title"); // Path for the operation.
+        opTitle.addProperty("value", title); // The value for the operation which is an argument to this method. 
+        patch.add(opTitle);
+        // Acceptance Criteria
+        if (acceptanceCriteria != null && !acceptanceCriteria.isBlank()) {
+            JsonObject opAC = new JsonObject();
+            opAC.addProperty("op", "add");
+            opAC.addProperty("path", "/fields/Microsoft.VSTS.Common.AcceptanceCriteria");
+            opAC.addProperty("value", acceptanceCriteria);
+            patch.add(opAC);
+        }
+        // Relations
+        // Only run this code if the id of WI to be linked is provided 
+        if (relatedID != null) {
+            // Set the patch operation
+            JsonObject linkOp = new JsonObject();
+            linkOp.addProperty("op", "add");
+            linkOp.addProperty("path", "/relations/-");
+
+            // Add the relationship id
+            JsonObject linkVal = new JsonObject();
+            // Create a parameterised string to set the relationship value
+            String value = "System.LinkTypes." + relationType;
+            linkVal.addProperty("rel", value);
+            linkVal.addProperty("url", String.format("https://dev.azure.com/%s/_apis/wit/workItems/%d", organisationName, relatedID));
+            
+            // Add a comment (not necessry)
+            JsonObject attrs = new JsonObject();
+            attrs.addProperty("comment", "Auto - linked by importer");
+            linkVal.add("attributes", attrs);
+            linkOp.add("value", linkVal);
+            patch.add(linkOp);
+        }
+
+        return patch;
+    }
 }
