@@ -3,8 +3,12 @@ package com.example.excel_to_ADO;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -15,7 +19,7 @@ public class excelReader {
     private String filePath; // path of the excel file
     private Workbook workbook; // Workbook object
     private Sheet sheet;
-    private Record 
+    private List<RowData> sheetData; // List of row data which is essentially all data in a sheet without the header. 
     
     
     // Constructor. 
@@ -29,9 +33,63 @@ public class excelReader {
     }
 
 
+    private boolean retrieveRowData(){
+        // Instantiate an empty rows list
+        this.sheetData = new ArrayList<>();
+        // We want to ignore the header row
+        boolean skipHeader = true;
+
+        // Go over each row in the sheet.
+        for (Row r : sheet) {
+
+            // The header row is always the first one. So if we decided to ignore it, we simply continue to the net iteration.
+            if (skipHeader) { 
+                skipHeader = false; 
+                continue;
+            }
+
+            // Add a new record everytime to the sheetData List
+            this.sheetData.add(new RowData(
+                    getInt (r, 0),   // Parent ADO ID - A
+                    getStr (r, 1),   // Parent Title - B
+                    getInt (r, 2),   // Child ADO ID - C
+                    getStr (r, 3),   // Child Work-item Type - D
+                    getStr (r, 4),   // Work-item Title - E
+                    getStr (r, 5))); // Acceptance criteria - F
+        }
+        return true;
+    }
 
 
     // Helper functions
+    
+    // When the column is only Integers (ADO IDs). I am returning an Integer so that I can also deal with nulls
+    private Integer getInt(Row r, int column){
+        // Get the cell at at specified column number and if it is blank, return null.
+        Cell c = r.getCell(column, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+        // if the cell is blank return null
+        if(c == null){
+            return null;
+        }
+
+        // Deal with different cases
+        switch (c.getCellType()){
+            // if the cell type is numeric, return the int
+            case NUMERIC:
+                return (int) c.getNumericCellValue();
+            // if the cell type is string, then see if it is blank and if not convert it to an integer 
+            case STRING:
+                if (c.getStringCellValue().isBlank()){
+                    return null;
+                } else{
+                    return Integer.valueOf(c.getStringCellValue());
+                }
+            default:
+                return null;
+        }
+
+
+    }
 
     // Helper method which opens the workbook and leaves only the Workbook open.
     // The FileInputStream is closed immediately after loading.
