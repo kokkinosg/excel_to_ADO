@@ -15,6 +15,7 @@ public class excelReader {
     private String filePath; // path of the excel file
     private Workbook workbook; // Workbook object
     private Sheet sheet;
+    private Record 
     
     
     // Constructor. 
@@ -27,7 +28,7 @@ public class excelReader {
         }
     }
 
-    
+
 
 
     // Helper functions
