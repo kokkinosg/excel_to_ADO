@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -87,7 +87,19 @@ public class excelReader {
             default:
                 return null;
         }
+    }
 
+
+    // When the column is String i am either returning an empty string or the actual string
+    private String getStr(Row r, int column){
+        // Get the cell at at specified column number and if it is blank, return null.
+        Cell c = r.getCell(column, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+        // if the cell is blank return null
+        if(c == null){
+            return "";
+        }
+        // If it is not null, return the string. 
+        return c.toString();
 
     }
 
