@@ -1,4 +1,5 @@
 # excel_to_ADO
+
 This is a tool which takes an excel file containing requirements and uploads them to DevOps. It saves enormous amount of physical and mental effort from doing it manually.  
 
 ## How to use
@@ -83,4 +84,7 @@ The entry point to the software. It acts as the controler and executor defining 
     createWorkItem(childType, childTitle, acceptanceCriteria, parentId, "Hierarchy-Reverse")
         •	This creates the work item and links it to its parent when parentId is not null.
 	6.	Output progress — AdoRESTClient prints a success line with the new work-item ID for every row processed.
+
+# Disclaimer
+The PAT has been revoked. I just let it as an example of how it looks like. 
 
