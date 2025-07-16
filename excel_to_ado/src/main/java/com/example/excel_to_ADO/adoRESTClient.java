@@ -23,20 +23,24 @@ public class AdoRESTClient {
      //#region Private variables
 
     // Private variables for the conenction object
-    private final String organisationName = "SphereFluidics";
-    private final String projectName = "Cyto-Mine";
-    private final String apiVersion = "7.1";
+    private String organisationName;
+    private String projectName;
+    private String apiVersion;
     // Personal access token obtained from User Settings on ADO - valid for 30 days (obtained: 10/07/2025)
     // Note: It has full permissions
-    private final String personalAccessToken = "66a64rtP0ToGXCOgAlmfFSxPWSIibQv9C309Kxig4TF1sRAgaXWlJQQJ99BGACAAAAArd3bnAAASAZDO2QAl";
+    private String personalAccessToken;
     
     // Client object
     private final OkHttpClient client;
     //#endregion
 
-    // Constructor to create all instances
+    // Constructor to create all instances na
 
-     public AdoRESTClient() {
+     public AdoRESTClient(String organisationName, String projectName, String apiVersion, String personalAccessToken) {
+        this.organisationName = organisationName;
+        this.projectName = projectName;
+        this.apiVersion = apiVersion;
+        this.personalAccessToken = personalAccessToken;
 
         // OKHttpClient with a set timeout of 10s. It will retry connection once if it fails hte first time.
         this.client = new OkHttpClient.Builder()
