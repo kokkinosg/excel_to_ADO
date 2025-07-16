@@ -13,27 +13,31 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 // Class which performs all required operations on the excel files to give out the required data 
-public class excelReader {
+public class ExcelReader {
 
     // Private variables 
-    private String filePath; // path of the excel file
     private Workbook workbook; // Workbook object
     private Sheet sheet;
     private List<RowData> sheetData; // List of row data which is essentially all data in a sheet without the header. 
     
-    
+
     // Constructor. 
     // Takes the path to the excel file as an argument and the sheet number with the data and will open the xlsx, workbook and then the sheet. 
-    public excelReader(String filePath, String sheetName){
-
+    public ExcelReader(String filePath, String sheetName){
 
         if (openXlsx(filePath) && openSheet(sheetName)){
-            // Code to execute when hte sheet is obtianed
+            retrieveRowData();
         }
     }
 
+    // The getter for the sheet data. 
+    public List<RowData> getSheetData(){
+        return sheetData;
+    }
 
-    private boolean retrieveRowData(){
+    // Helper functions
+    // Retrieve all data for each row and add them to the list of row data.
+    private void retrieveRowData(){
         // Instantiate an empty rows list
         this.sheetData = new ArrayList<>();
         // We want to ignore the header row
@@ -57,12 +61,8 @@ public class excelReader {
                     getStr (r, 4),   // Work-item Title - E
                     getStr (r, 5))); // Acceptance criteria - F
         }
-        return true;
     }
 
-
-    // Helper functions
-    
     // When the column is only Integers (ADO IDs). I am returning an Integer so that I can also deal with nulls
     private Integer getInt(Row r, int column){
         // Get the cell at at specified column number and if it is blank, return null.
@@ -88,7 +88,6 @@ public class excelReader {
                 return null;
         }
     }
-
 
     // When the column is String i am either returning an empty string or the actual string
     private String getStr(Row r, int column){

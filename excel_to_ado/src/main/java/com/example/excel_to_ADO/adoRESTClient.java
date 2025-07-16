@@ -18,7 +18,7 @@ import okhttp3.Response;
 
 // This is the class containing all GET, POST, PUT, DELETE requests from the REST api of Azure Dev Ops. 
 // Check out https://learn.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-7.2
-public class adoRESTClient {
+public class AdoRESTClient {
     
      //#region Private variables
 
@@ -36,7 +36,7 @@ public class adoRESTClient {
 
     // Constructor to create all instances
 
-     public adoRESTClient() {
+     public AdoRESTClient() {
 
         // OKHttpClient with a set timeout of 10s. It will retry connection once if it fails hte first time.
         this.client = new OkHttpClient.Builder()
