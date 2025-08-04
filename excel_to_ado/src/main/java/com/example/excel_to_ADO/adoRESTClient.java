@@ -172,7 +172,7 @@ public class AdoRESTClient {
 
         // Invoke the helper function to create the patch for the request. 
         // JSON Patch is still JSON, but with a special structure: an array of {op, path, value} objects.
-        JsonArray patch = createJsonArray(title, acceptanceCriteria, relatedID, relationType);
+        JsonArray patch = createSysReqJsonArray(title, acceptanceCriteria, relatedID, relationType);
 
 
         // Build a POST request object and include the query. 
@@ -211,11 +211,13 @@ public class AdoRESTClient {
         }
     }
 
+    //#region Helper functions
+
     // Helper method to create a JSON array object for creatin work items
     // PARENT("System.LinkTypes.Hierarchy-Forward"),
     // CHILD ("System.LinkTypes.Hierarchy-Reverse"),
     // RELATED("System.LinkTypes.Related");   
-    private JsonArray createJsonArray(String title, String acceptanceCriteria, Integer relatedID, String relationType){
+    private JsonArray createSysReqJsonArray(String title, String acceptanceCriteria, Integer relatedID, String relationType){
         // Create a JSON Array with the required info 
         JsonArray patch = new JsonArray();
 
