@@ -67,7 +67,7 @@ public class Main {
 
                     // Add each row to dev ops
                     for(FMEARiskData row : riskData){
-                        // "Hierarchy-Reverse" is when each row is a child to the parent. 
+                        // "Dependency-Reverse  
                         client.createFMEARiskWI(
                             row.title(), 
                             row.failureEffects(), 
