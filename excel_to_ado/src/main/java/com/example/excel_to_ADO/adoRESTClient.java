@@ -48,6 +48,8 @@ public class AdoRESTClient {
                 .build();
     }
 
+    //#region Public functions
+
     // Method to test the connection
     public boolean testConnection() {
         //Create a URL
@@ -202,11 +204,12 @@ public class AdoRESTClient {
         // Invoke the createWorkItem helper to build a post request and analyse the response to see if items were succesfully created
         return createWorkItem(url, patch, "FMEA-Risk");
     }
-
+    
+    //#endregion
 
     //#region Helper functions
 
-    // Helper function to create a WorkItem by accepting the appropriate JsonArray
+    // Helper function to create any WorkItem by accepting the appropriate JsonArray
     private boolean createWorkItem(HttpUrl url, JsonArray jsonArray, String workItemType){
 
         // Build a POST request object and include the query. 
@@ -296,7 +299,9 @@ public class AdoRESTClient {
     // Helper method to create a JSON array object for creatin work items
     // PARENT("System.LinkTypes.Hierarchy-Forward"),
     // CHILD ("System.LinkTypes.Hierarchy-Reverse"),
-    // RELATED("System.LinkTypes.Related");   
+    // RELATED("System.LinkTypes.Related");  
+    // SUCCESSOR ("System.LinkTypes.Dependency-Reverse"),
+    // PREDECCESSOR ("System.LinkTypes.Dependency-Forward");    
     private JsonArray createRiskJsonArray(
         String title, String failureEffects, String cause,
         String mitigation, String evidence, 
@@ -430,4 +435,5 @@ public class AdoRESTClient {
         return patch;
     }
 
+    //#endregion
 }

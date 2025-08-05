@@ -18,7 +18,7 @@ public class ExcelReader {
     // Private variables 
     private Workbook workbook; // Workbook object
     private Sheet sheet;
-    private List<RequirementData> sheetData; // List of row data which is essentially all system req data in a sheet without the header. 
+    private List<UserStoryData> sheetData; // List of row data which is essentially all system req data in a sheet without the header. 
     
 
     // Constructor. 
@@ -31,7 +31,7 @@ public class ExcelReader {
     }
 
     // The getter for the sheet data. 
-    public List<RequirementData> getSheetData(){
+    public List<UserStoryData> getSheetData(){
         return sheetData;
     }
 
@@ -53,7 +53,7 @@ public class ExcelReader {
             }
 
             // Add a new record everytime to the sheetData List
-            this.sheetData.add(new RequirementData(
+            this.sheetData.add(new UserStoryData(
                     getInt (r, 0),   // Parent ADO ID - A
                     getStr (r, 1),   // Parent Title - B
                     getInt (r, 2),   // Child ADO ID - C
