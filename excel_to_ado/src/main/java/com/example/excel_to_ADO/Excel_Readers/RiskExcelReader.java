@@ -1,10 +1,9 @@
-package com.example.excel_to_ADO;
+package com.example.excel_to_ADO.Excel_Readers;
 
 import java.util.ArrayList;
 
 import org.apache.poi.ss.usermodel.Row;
 
-import com.example.excel_to_ADO.Abstract_classes.ExcelReader;
 import com.example.excel_to_ADO.Data_Structures.FMEARiskData;
 
 public class RiskExcelReader extends ExcelReader<FMEARiskData> {
