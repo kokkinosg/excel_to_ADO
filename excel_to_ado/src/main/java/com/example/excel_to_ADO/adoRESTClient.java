@@ -1,7 +1,6 @@
 package com.example.excel_to_ADO;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
@@ -159,11 +158,13 @@ public class AdoRESTClient {
         }
     }
 
-    // Method to create a work item of a specified type, title, acceptance criteria and specific links to other work items. 
-    public boolean createWorkItem(String workItemType, String title, String acceptanceCriteria, Integer relatedID, String relationType){
+
+    // Method to create a User Story Requirement work item. It accepts a title, acceptance criteria and specific links to other work items. 
+    public boolean createUserStoryWI(String title, String acceptanceCriteria, Integer relatedID, String relationType){
 
         // Change the type so that it matches what devops expects.
-        String type = URLEncoder.encode(workItemType, StandardCharsets.UTF_8).replace("-", "%20");
+        //String type = URLEncoder.encode("User-Story", StandardCharsets.UTF_8).replace("-", "%20");
+        String type = "User%20Story";
         
         // Create the URL
         HttpUrl url = HttpUrl.parse(String.format(
@@ -172,15 +173,48 @@ public class AdoRESTClient {
 
         // Invoke the helper function to create the patch for the request. 
         // JSON Patch is still JSON, but with a special structure: an array of {op, path, value} objects.
-        JsonArray patch = createSysReqJsonArray(title, acceptanceCriteria, relatedID, relationType);
+        JsonArray patch = createUserStoryJsonArray(title, acceptanceCriteria, relatedID, relationType);
 
+        // Invoke the createWorkItem helper to build a post request and analyse the response to see if items were succesfully created
+        return createWorkItem(url, patch, "User-Story");
+    }
+
+    // Method to create a FMEA Risk work item. 
+    public boolean createFMEARiskWI(String title, String failureEffects, String cause,
+        String mitigation, String evidence, 
+        String preSeverity, String preOccurance, String preDetection, 
+        String resSeverity, String resOccurance, String resDetection,
+        Integer relatedID, String relationType){
+
+        // Change the type so that it matches what devops expects.
+        //String type = URLEncoder.encode("FMEA-Risk", StandardCharsets.UTF_8).replace("-", "%20");
+        String type = "FMEA%20Risk";
+        
+        // Create the URL
+        HttpUrl url = HttpUrl.parse(String.format(
+                "https://dev.azure.com/%s/%s/_apis/wit/workitems/$%s?api-version=%s",
+                organisationName, projectName, type, apiVersion));
+
+        // Invoke the helper function to create the patch for the request. 
+        // JSON Patch is still JSON, but with a special structure: an array of {op, path, value} objects.
+        JsonArray patch = createRiskJsonArray(title, failureEffects, cause, mitigation, evidence, preSeverity, preOccurance, preDetection, resSeverity, resOccurance, resDetection, relatedID, relationType);
+
+        // Invoke the createWorkItem helper to build a post request and analyse the response to see if items were succesfully created
+        return createWorkItem(url, patch, "FMEA-Risk");
+    }
+
+
+    //#region Helper functions
+
+    // Helper function to create a WorkItem by accepting the appropriate JsonArray
+    private boolean createWorkItem(HttpUrl url, JsonArray jsonArray, String workItemType){
 
         // Build a POST request object and include the query. 
         Request req = new Request.Builder()
                 .url(url)
                 .addHeader("Authorization", Credentials.basic("", personalAccessToken))
                 .addHeader("Content-Type", "application/json-patch+json")
-                .post(RequestBody.create(patch.toString().getBytes(StandardCharsets.UTF_8)))
+                .post(RequestBody.create(jsonArray.toString().getBytes(StandardCharsets.UTF_8)))
                 .build();
         
         try (Response resp = client.newCall(req).execute()) {
@@ -211,13 +245,11 @@ public class AdoRESTClient {
         }
     }
 
-    //#region Helper functions
-
     // Helper method to create a JSON array object for creatin work items
     // PARENT("System.LinkTypes.Hierarchy-Forward"),
     // CHILD ("System.LinkTypes.Hierarchy-Reverse"),
     // RELATED("System.LinkTypes.Related");   
-    private JsonArray createSysReqJsonArray(String title, String acceptanceCriteria, Integer relatedID, String relationType){
+    private JsonArray createUserStoryJsonArray(String title, String acceptanceCriteria, Integer relatedID, String relationType){
         // Create a JSON Array with the required info 
         JsonArray patch = new JsonArray();
 
@@ -260,4 +292,142 @@ public class AdoRESTClient {
 
         return patch;
     }
+
+    // Helper method to create a JSON array object for creatin work items
+    // PARENT("System.LinkTypes.Hierarchy-Forward"),
+    // CHILD ("System.LinkTypes.Hierarchy-Reverse"),
+    // RELATED("System.LinkTypes.Related");   
+    private JsonArray createRiskJsonArray(
+        String title, String failureEffects, String cause,
+        String mitigation, String evidence, 
+        String preSeverity, String preOccurance, String preDetection, 
+        String resSeverity, String resOccurance, String resDetection,
+        Integer relatedID, String relationType)
+        {
+        // Create a JSON Array with the required info 
+        JsonArray patch = new JsonArray();
+
+        // Add the tile - Failure Mode
+        JsonObject opTitle = new JsonObject();
+        opTitle.addProperty("op", "add"); // Define the patch operation. Here we are adding. 
+        opTitle.addProperty("path", "/fields/System.Title"); // Path for the operation.
+        opTitle.addProperty("value", title); // The value for the operation which is an argument to this method. 
+        patch.add(opTitle);
+
+        // Potential Failure Effects
+        if (failureEffects != null && !failureEffects.isBlank()) {
+            JsonObject opAC = new JsonObject();
+            opAC.addProperty("op", "add");
+            opAC.addProperty("path", "/fields/Custom.FMEAPotentialFailureEffects");
+            opAC.addProperty("value", failureEffects);
+            patch.add(opAC);
+        }
+
+        // Probable Causes
+        if (cause != null && !cause.isBlank()) {
+            JsonObject opAC = new JsonObject();
+            opAC.addProperty("op", "add");
+            opAC.addProperty("path", "/fields/Custom.FMEAProbableCause");
+            opAC.addProperty("value", cause);
+            patch.add(opAC);
+        }
+
+        // Mitigation
+        if (mitigation != null && !mitigation.isBlank()) {
+            JsonObject opAC = new JsonObject();
+            opAC.addProperty("op", "add");
+            opAC.addProperty("path", "/fields/Custom.FMEAMitigationsRequired");
+            opAC.addProperty("value", mitigation);
+            patch.add(opAC);
+        }
+
+        // Evidence
+        if (evidence != null && !evidence.isBlank()) {
+            JsonObject opAC = new JsonObject();
+            opAC.addProperty("op", "add");
+            opAC.addProperty("path", "/fields/Custom.FMEAEvidence");
+            opAC.addProperty("value", evidence);
+            patch.add(opAC);
+        }
+
+        // Preliminary RIsk Evaluation Severity
+        if (preSeverity != null && !preSeverity.isBlank()) {
+            JsonObject opAC = new JsonObject();
+            opAC.addProperty("op", "add");
+            opAC.addProperty("path", "/fields/Custom.FMEASeverity");
+            opAC.addProperty("value", preSeverity);
+            patch.add(opAC);
+        }
+
+        // Preliminary RIsk Evaluation Occurance
+        if (preOccurance != null && !preOccurance.isBlank()) {
+            JsonObject opAC = new JsonObject();
+            opAC.addProperty("op", "add");
+            opAC.addProperty("path", "/fields/Custom.FMEAOccurance");
+            opAC.addProperty("value", preOccurance);
+            patch.add(opAC);
+        }
+
+        // Preliminary RIsk Evaluation Detection
+        if (preDetection != null && !preDetection.isBlank()) {
+            JsonObject opAC = new JsonObject();
+            opAC.addProperty("op", "add");
+            opAC.addProperty("path", "/fields/Custom.FMEADetection");
+            opAC.addProperty("value", preDetection);
+            patch.add(opAC);
+        }
+
+        // Residual Risk Evaluation Severity
+        if (resSeverity != null && !resSeverity.isBlank()) {
+            JsonObject opAC = new JsonObject();
+            opAC.addProperty("op", "add");
+            opAC.addProperty("path", "/fields/Custom.FMEAResidualSeverity");
+            opAC.addProperty("value", resSeverity);
+            patch.add(opAC);
+        }
+
+        // Residual RIsk Evaluation Occurance
+        if (resOccurance != null && !resOccurance.isBlank()) {
+            JsonObject opAC = new JsonObject();
+            opAC.addProperty("op", "add");
+            opAC.addProperty("path", "/fields/Custom.FMEAResidualOccurance");
+            opAC.addProperty("value", resOccurance);
+            patch.add(opAC);
+        }
+
+        // Residual RIsk Evaluation Detection
+        if (resDetection != null && !resDetection.isBlank()) {
+            JsonObject opAC = new JsonObject();
+            opAC.addProperty("op", "add");
+            opAC.addProperty("path", "/fields/Custom.FMEAResidualDetection");
+            opAC.addProperty("value", resDetection);
+            patch.add(opAC);
+        }
+
+        // Relations
+        // Only run this code if the id of WI to be linked is provided 
+        if (relatedID != null) {
+            // Set the patch operation
+            JsonObject linkOp = new JsonObject();
+            linkOp.addProperty("op", "add");
+            linkOp.addProperty("path", "/relations/-");
+
+            // Add the relationship id
+            JsonObject linkVal = new JsonObject();
+            // Create a parameterised string to set the relationship value
+            String value = "System.LinkTypes." + relationType;
+            linkVal.addProperty("rel", value);
+            linkVal.addProperty("url", String.format("https://dev.azure.com/%s/_apis/wit/workItems/%d", organisationName, relatedID));
+            
+            // Add a comment (not necessry)
+            JsonObject attrs = new JsonObject();
+            attrs.addProperty("comment", "Auto - linked by importer");
+            linkVal.add("attributes", attrs);
+            linkOp.add("value", linkVal);
+            patch.add(linkOp);
+        }
+
+        return patch;
+    }
+
 }

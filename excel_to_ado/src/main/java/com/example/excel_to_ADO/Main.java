@@ -28,10 +28,10 @@ public class Main {
             // Carry out the data retrieval from the excel sheet
             ExcelReader excelReader = new ExcelReader(filePath, sheetName);
             // Extract the sheetData to a local list
-            List<SysReqData> sheetData = excelReader.getSheetData();
+            List<RequirementData> sheetData = excelReader.getSheetData();
 
             // Add each row to dev ops
-            for(SysReqData row : sheetData){
+            for(RequirementData row : sheetData){
                 // "Hierarchy-Reverse" is when each row is a child to the parent. 
                 client.createWorkItem(row.childType(), row.childTitle(), row.acceptanceCriteria(), row.parentId(), "Hierarchy-Reverse");
             }
