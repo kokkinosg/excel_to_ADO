@@ -11,7 +11,7 @@ public record FMEARiskData (
         String preSeverity, 
         String preOccurrence, 
         String preDetection, 
-        String mitigation, 
+        String mitigationType, 
         String evidence, 
         String resSeverity, 
         String resOccurrence, 

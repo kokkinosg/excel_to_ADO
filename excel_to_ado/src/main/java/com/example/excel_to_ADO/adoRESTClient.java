@@ -337,11 +337,11 @@ public class AdoRESTClient {
             patch.add(opAC);
         }
 
-        // Mitigation
+        // Mitigation Type
         if (mitigation != null && !mitigation.isBlank()) {
             JsonObject opAC = new JsonObject();
             opAC.addProperty("op", "add");
-            opAC.addProperty("path", "/fields/Custom.FMEAMitigationsRequired");
+            opAC.addProperty("path", "/fields/Custom.FMEAMitigationType");
             opAC.addProperty("value", mitigation);
             patch.add(opAC);
         }

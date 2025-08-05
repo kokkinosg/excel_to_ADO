@@ -75,7 +75,7 @@ public class Main {
                             row.preSeverity(), 
                             row.preOccurrence(), 
                             row.preDetection(), 
-                            row.mitigation(), 
+                            row.mitigationType(), 
                             row.evidence(), 
                             row.resSeverity(),
                             row.resOccurrence(),
