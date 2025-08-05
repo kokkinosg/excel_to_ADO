@@ -1,3 +1,8 @@
+/Users/george/excel_to_ADO/excel_to_ado/src/main/java/com/example/excel_to_ADO/AdoRESTClient.java
 /Users/george/excel_to_ADO/excel_to_ado/src/main/java/com/example/excel_to_ADO/Archived/DataSender.java
+/Users/george/excel_to_ADO/excel_to_ado/src/main/java/com/example/excel_to_ADO/Data_Structures/FMEARiskData.java
+/Users/george/excel_to_ADO/excel_to_ado/src/main/java/com/example/excel_to_ADO/Data_Structures/UserStoryData.java
+/Users/george/excel_to_ADO/excel_to_ado/src/main/java/com/example/excel_to_ADO/Excel_Readers/ExcelReader.java
+/Users/george/excel_to_ADO/excel_to_ado/src/main/java/com/example/excel_to_ADO/Excel_Readers/RiskExcelReader.java
+/Users/george/excel_to_ADO/excel_to_ado/src/main/java/com/example/excel_to_ADO/Excel_Readers/UserStoryExcelReader.java
 /Users/george/excel_to_ADO/excel_to_ado/src/main/java/com/example/excel_to_ADO/Main.java
-/Users/george/excel_to_ADO/excel_to_ado/src/main/java/com/example/excel_to_ADO/adoRESTClient.java

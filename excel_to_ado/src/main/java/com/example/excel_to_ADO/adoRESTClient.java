@@ -183,9 +183,9 @@ public class AdoRESTClient {
 
     // Method to create a FMEA Risk work item. 
     public boolean createFMEARiskWI(String title, String failureEffects, String cause,
+        String preSeverity, String preOccurrence, String preDetection,
         String mitigation, String evidence, 
-        String preSeverity, String preOccurance, String preDetection, 
-        String resSeverity, String resOccurance, String resDetection,
+        String resSeverity, String resOccurrence, String resDetection,
         Integer relatedID, String relationType){
 
         // Change the type so that it matches what devops expects.
@@ -199,7 +199,7 @@ public class AdoRESTClient {
 
         // Invoke the helper function to create the patch for the request. 
         // JSON Patch is still JSON, but with a special structure: an array of {op, path, value} objects.
-        JsonArray patch = createRiskJsonArray(title, failureEffects, cause, mitigation, evidence, preSeverity, preOccurance, preDetection, resSeverity, resOccurance, resDetection, relatedID, relationType);
+        JsonArray patch = createRiskJsonArray(title, failureEffects, cause, mitigation, evidence, preSeverity, preOccurrence, preDetection, resSeverity, resOccurrence, resDetection, relatedID, relationType);
 
         // Invoke the createWorkItem helper to build a post request and analyse the response to see if items were succesfully created
         return createWorkItem(url, patch, "FMEA-Risk");
@@ -305,8 +305,8 @@ public class AdoRESTClient {
     private JsonArray createRiskJsonArray(
         String title, String failureEffects, String cause,
         String mitigation, String evidence, 
-        String preSeverity, String preOccurance, String preDetection, 
-        String resSeverity, String resOccurance, String resDetection,
+        String preSeverity, String preOccurrence, String preDetection, 
+        String resSeverity, String resOccurrence, String resDetection,
         Integer relatedID, String relationType)
         {
         // Create a JSON Array with the required info 
@@ -364,12 +364,12 @@ public class AdoRESTClient {
             patch.add(opAC);
         }
 
-        // Preliminary RIsk Evaluation Occurance
-        if (preOccurance != null && !preOccurance.isBlank()) {
+        // Preliminary RIsk Evaluation Occurrence
+        if (preOccurrence != null && !preOccurrence.isBlank()) {
             JsonObject opAC = new JsonObject();
             opAC.addProperty("op", "add");
-            opAC.addProperty("path", "/fields/Custom.FMEAOccurance");
-            opAC.addProperty("value", preOccurance);
+            opAC.addProperty("path", "/fields/Custom.FMEAOccurrence");
+            opAC.addProperty("value", preOccurrence);
             patch.add(opAC);
         }
 
@@ -391,12 +391,12 @@ public class AdoRESTClient {
             patch.add(opAC);
         }
 
-        // Residual RIsk Evaluation Occurance
-        if (resOccurance != null && !resOccurance.isBlank()) {
+        // Residual RIsk Evaluation Occurrence
+        if (resOccurrence != null && !resOccurrence.isBlank()) {
             JsonObject opAC = new JsonObject();
             opAC.addProperty("op", "add");
-            opAC.addProperty("path", "/fields/Custom.FMEAResidualOccurance");
-            opAC.addProperty("value", resOccurance);
+            opAC.addProperty("path", "/fields/Custom.FMEAResidualOccurrence");
+            opAC.addProperty("value", resOccurrence);
             patch.add(opAC);
         }
 
