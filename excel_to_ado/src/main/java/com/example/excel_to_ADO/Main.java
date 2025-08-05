@@ -8,8 +8,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        
-
         // Private variables for the conenction object
         final String organisationName = "";
         final String projectName = "";
@@ -20,6 +18,8 @@ public class Main {
         // Path to the excel sheet
         String filePath = "";
         String sheetName = "";
+
+        System.out.println();
         
         // Instantiate the client class
         AdoRESTClient client = new AdoRESTClient(organisationName, projectName, apiVersion, personalAccessToken);
