@@ -17,21 +17,26 @@ public abstract class ExcelReader <T> {
     // Private variables 
     protected Workbook workbook; // Workbook object
     protected Sheet sheet;
-    protected List<T> sheetData; // List of row data which is essentially all system req data in a sheet without the header. 
-    
+    protected List<T> sheetData; // List of row data. 
+    protected String sheetName; // Name of the sheet 
+    protected String filePath; // Path to the excel file
 
     // Constructor. 
     // Takes the path to the excel file as an argument and the sheet number with the data and will open the xlsx, workbook and then the sheet. 
     public ExcelReader(String filePath, String sheetName){
 
-        if (openXlsx(filePath) && openSheet(sheetName)){
-            retrieveRowData();
-        }
+        this.filePath = filePath;
+        this.sheetName = sheetName;
     }
 
     // The getter for the sheet data. 
     public List<T> getSheetData(){
-        return sheetData;
+        // Try to open the excel file and the corresponding sheet. When succesfful, get the row data and return them. 
+        if (openXlsx(filePath) && openSheet(sheetName)){
+            retrieveRowData(); // retrieveRowData will populate sheetData
+            return sheetData; // sheetData belongs to the child classes. it cannot exist without it. 
+        } 
+        return null;
     }
 
     
