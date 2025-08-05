@@ -1,9 +1,8 @@
-package com.example.excel_to_ADO;
+package com.example.excel_to_ADO.Abstract_classes;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -12,13 +11,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-// Class which performs all required operations on the excel files to give out the required data 
-public class ExcelReader {
+// Abstract, generic class which performs all required operations on the excel files to give out the required data 
+public abstract class ExcelReader <T> {
 
     // Private variables 
     private Workbook workbook; // Workbook object
     private Sheet sheet;
-    private List<UserStoryData> sheetData; // List of row data which is essentially all system req data in a sheet without the header. 
+    private List<T> sheetData; // List of row data which is essentially all system req data in a sheet without the header. 
     
 
     // Constructor. 
@@ -31,37 +30,15 @@ public class ExcelReader {
     }
 
     // The getter for the sheet data. 
-    public List<UserStoryData> getSheetData(){
+    public List<T> getSheetData(){
         return sheetData;
     }
 
-    // Helper functions
-    // Retrieve all data for each row and add them to the list of row data.
-    private void retrieveRowData(){
-        // Instantiate an empty rows list
-        this.sheetData = new ArrayList<>();
-        // We want to ignore the header row
-        boolean skipHeader = true;
+    
+    // Method to be overriden by the subclasses
+    protected abstract void retrieveRowData();
 
-        // Go over each row in the sheet.
-        for (Row r : sheet) {
-
-            // The header row is always the first one. So if we decided to ignore it, we simply continue to the net iteration.
-            if (skipHeader) { 
-                skipHeader = false; 
-                continue;
-            }
-
-            // Add a new record everytime to the sheetData List
-            this.sheetData.add(new UserStoryData(
-                    getInt (r, 0),   // Parent ADO ID - A
-                    getStr (r, 1),   // Parent Title - B
-                    getInt (r, 2),   // Child ADO ID - C
-                    getStr (r, 3),   // Child Work-item Type - D
-                    getStr (r, 4),   // Work-item Title - E
-                    getStr (r, 5))); // Acceptance criteria - F
-        }
-    }
+    //#region Helper Functions
 
     // When the column is only Integers (ADO IDs). I am returning an Integer so that I can also deal with nulls
     private Integer getInt(Row r, int column){
@@ -128,5 +105,6 @@ public class ExcelReader {
         }
     }
 
+    //#endregion
     
 }
