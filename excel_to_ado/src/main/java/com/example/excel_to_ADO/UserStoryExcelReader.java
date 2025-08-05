@@ -4,12 +4,19 @@ import java.util.ArrayList;
 
 import org.apache.poi.ss.usermodel.Row;
 
+import com.example.excel_to_ADO.Abstract_classes.ExcelReader;
 import com.example.excel_to_ADO.Data_Structures.UserStoryData;
 
-public class UserStoryExcelReader {
+public class UserStoryExcelReader extends ExcelReader<UserStoryData>{
+
+    // Constructor
+    public UserStoryExcelReader(String filePath, String sheetName){
+        super(filePath, sheetName); //call the constructor from the parent class
+    }
 
     // Retrieve all data for each row and add them to the list of row data.
-    private void retrieveRowData(){
+    @Override
+    protected void retrieveRowData(){
         // Instantiate an empty rows list
         this.sheetData = new ArrayList<>();
         // We want to ignore the header row

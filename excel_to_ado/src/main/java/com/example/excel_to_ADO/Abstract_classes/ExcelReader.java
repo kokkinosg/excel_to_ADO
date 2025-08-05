@@ -15,9 +15,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public abstract class ExcelReader <T> {
 
     // Private variables 
-    private Workbook workbook; // Workbook object
-    private Sheet sheet;
-    private List<T> sheetData; // List of row data which is essentially all system req data in a sheet without the header. 
+    protected Workbook workbook; // Workbook object
+    protected Sheet sheet;
+    protected List<T> sheetData; // List of row data which is essentially all system req data in a sheet without the header. 
     
 
     // Constructor. 
@@ -41,7 +41,7 @@ public abstract class ExcelReader <T> {
     //#region Helper Functions
 
     // When the column is only Integers (ADO IDs). I am returning an Integer so that I can also deal with nulls
-    private Integer getInt(Row r, int column){
+    protected Integer getInt(Row r, int column){
         // Get the cell at at specified column number and if it is blank, return null.
         Cell c = r.getCell(column, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
         // if the cell is blank return null
@@ -67,7 +67,7 @@ public abstract class ExcelReader <T> {
     }
 
     // When the column is String i am either returning an empty string or the actual string
-    private String getStr(Row r, int column){
+    protected String getStr(Row r, int column){
         // Get the cell at at specified column number and if it is blank, return null.
         Cell c = r.getCell(column, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
         // if the cell is blank return null
@@ -81,7 +81,7 @@ public abstract class ExcelReader <T> {
 
     // Helper method which opens the workbook and leaves only the Workbook open.
     // The FileInputStream is closed immediately after loading.
-    private boolean openXlsx(String filePath){
+    protected boolean openXlsx(String filePath){
         try (FileInputStream file = new FileInputStream(filePath)) { // This way the stream auto closes. 
             this.workbook = new XSSFWorkbook(file); 
             return true;
@@ -95,7 +95,7 @@ public abstract class ExcelReader <T> {
     }
 
     // Method to open a sheet from a specified workbook. 
-    private boolean openSheet(String sheetName){
+    protected boolean openSheet(String sheetName){
         try {
             this.sheet = workbook.getSheet(sheetName);
             return true;
