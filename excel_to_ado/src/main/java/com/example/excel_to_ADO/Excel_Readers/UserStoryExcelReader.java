@@ -30,6 +30,11 @@ public class UserStoryExcelReader extends ExcelReader<UserStoryData>{
                 continue;
             }
 
+            // Skip empty rows or invalid
+            if (isRowEmpty(r)) {
+                continue;
+            }
+
             // Add a new record everytime to the sheetData List
             this.sheetData.add(new UserStoryData(
                     getInt (r, 0),   // Parent ADO ID - A

@@ -111,7 +111,7 @@ public abstract class ExcelReader <T> {
     }
 
     // Method which checks if a row is empty
-    private boolean isRowEmpty(Row row) {
+    protected boolean isRowEmpty(Row row) {
         // When there are no rows, return true. This is important because if dont check this here, row.getFirstCellNum will return -1. 
         if (row == null) return true;
 

@@ -30,8 +30,9 @@ public class RiskExcelReader extends ExcelReader<FMEARiskData> {
                 continue;
             }
 
+            // Skip empty rows or invalid
             if (isRowEmpty(r)) {
-            continue;
+                continue;
             }
 
             // Add a new record everytime to the sheetData List
