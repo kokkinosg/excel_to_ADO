@@ -14,6 +14,7 @@ import com.example.excel_to_ADO.Excel_Readers.UserStoryExcelReader;
 
 public class Main {
 
+    // This includes all logic and CLI code 
     public static void main(String[] args) {
 
         // Load config from the properties file
@@ -48,42 +49,57 @@ public class Main {
             switch(choice){
                 // For User Stories
                 case (1): 
-                    // Carry out the data retrieval from the excel sheet
-                    UserStoryExcelReader userStoryReader = new UserStoryExcelReader(filePath, sheetName);
-                    // Extract the sheetData to a local list
-                    List<UserStoryData> userStoryData = userStoryReader.getSheetData();
-
-                    // Add each row to dev ops
-                    for(UserStoryData row : userStoryData){
-                        // "Hierarchy-Reverse" is when each row is a child to the parent. 
-                        client.createUserStoryWI(row.childTitle(), row.acceptanceCriteria(), row.parentId(), "Hierarchy-Reverse");
-                    }
+                    obtainAndUploadUserStories(filePath, sheetName, client);
                 // For FMEA Risks
                 case (2):
-                    // Carry out the data retrieval from the excel sheet
-                    RiskExcelReader riskReader = new RiskExcelReader(filePath, sheetName);
-                    // Extract the sheetData to a local list
-                    List<FMEARiskData> riskData = riskReader.getSheetData();
-
-                    // Add each row to dev ops
-                    for(FMEARiskData row : riskData){
-                        // "Dependency-Reverse  
-                        client.createFMEARiskWI(
-                            row.title(), 
-                            row.failureEffects(), 
-                            row.cause(), 
-                            row.preSeverity(), 
-                            row.preOccurrence(), 
-                            row.preDetection(), 
-                            row.mitigationType(), 
-                            row.evidence(), 
-                            row.resSeverity(),
-                            row.resOccurrence(),
-                            row.resDetection(),
-                            row.predecessorID(),
-                            "Dependency-Reverse");
-                    }
+                    obtainAndUploadRisks(filePath,sheetName,client);
+                default:
+                    System.out.println("Invalid choice, run the program again.");
             }
         }
     }
+
+    // Method which handles the logic of obtaining the risks from excel and uploading them to devOps.
+    static void obtainAndUploadRisks(String filePath, String sheetName, AdoRESTClient client){
+        // Carry out the data retrieval from the excel sheet
+        RiskExcelReader riskReader = new RiskExcelReader(filePath, sheetName);
+        // Extract the sheetData to a local list
+        List<FMEARiskData> riskData = riskReader.getSheetData();
+
+        // Add each row to dev ops
+        for(FMEARiskData row : riskData){
+            // "Dependency-Reverse makes the risk a successor to the origin requirement.
+            client.createFMEARiskWI(
+                row.title(), 
+                row.failureEffects(), 
+                row.cause(), 
+                row.preSeverity(), 
+                row.preOccurrence(), 
+                row.preDetection(), 
+                row.mitigationType(), 
+                row.evidence(), 
+                row.resSeverity(),
+                row.resOccurrence(),
+                row.resDetection(),
+                row.predecessorID(),
+                "Dependency-Reverse");
+        }
+    }
+
+    // Method which handles the logic of obtaining the User Stories from excel and uploading them to devOps.
+    static void obtainAndUploadUserStories(String filePath, String sheetName, AdoRESTClient client){
+         // Carry out the data retrieval from the excel sheet
+        UserStoryExcelReader userStoryReader = new UserStoryExcelReader(filePath, sheetName);
+        // Extract the sheetData to a local list
+        List<UserStoryData> userStoryData = userStoryReader.getSheetData();
+
+        // Add each row to dev ops
+        for(UserStoryData row : userStoryData){
+            // "Hierarchy-Reverse" is when each row is a child to the parent. 
+            client.createUserStoryWI(row.childTitle(), row.acceptanceCriteria(), row.parentId(), "Hierarchy-Reverse");
+        }
+    }
+
 }
+
+
