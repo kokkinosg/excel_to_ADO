@@ -49,11 +49,34 @@ public class Main {
             switch(choice){
                 // For User Stories
                 case (1): 
-                    obtainAndUploadUserStories(filePath, sheetName, client);
+                    // Retrieve all user stories from excel
+                    List<UserStoryData> userStories = obtainUserStories(filePath, sheetName);
+
+                    System.out.printf("Total number of User Stories found: %d\n", userStories.size());
+                    System.out.printf("Please check that the number matches the rows in excel.\n");
+
+                    if (continueCheck(scanner)){
+                        // Upload all risks to Azure DevOps
+                        uploadUserStories(userStories, client);
+                    } else {
+                        System.out.println("Nothing was uploaded.");
+                    }
                     break;
+
                 // For FMEA Risks
                 case (2):
-                    obtainAndUploadRisks(filePath,sheetName,client);
+                    // Obtain all risks from excel file
+                    List<FMEARiskData> risks = obtainRisks(filePath,sheetName);
+
+                    System.out.printf("Total number of risks found: %d\n", risks.size());
+                    System.out.printf("Please check that the number matches the rows in excel.\n");
+
+                    if (continueCheck(scanner)){
+                        // Upload all risks to Azure DevOps
+                        uploadRisks(risks, client);
+                    } else {
+                        System.out.println("Nothing was uploaded.");
+                    }
                     break;
                 default:
                     System.out.println("Invalid choice, run the program again.");
@@ -63,14 +86,7 @@ public class Main {
     }
 
     // Method which handles the logic of obtaining the risks from excel and uploading them to devOps.
-    static void obtainAndUploadRisks(String filePath, String sheetName, AdoRESTClient client){
-        // Carry out the data retrieval from the excel sheet
-        RiskExcelReader riskReader = new RiskExcelReader(filePath, sheetName);
-        // Extract the sheetData to a local list
-        List<FMEARiskData> riskData = riskReader.getSheetData();
-
-        System.out.printf("Total number of risks found: %d\n", riskData.size());
-
+    static void uploadRisks(List<FMEARiskData> riskData, AdoRESTClient client){
         // Add each row to dev ops
         for(FMEARiskData row : riskData){
             // Ignore all risks which already have an ADO ID because it means they have already been uploaded
@@ -98,12 +114,7 @@ public class Main {
     }
 
     // Method which handles the logic of obtaining the User Stories from excel and uploading them to devOps.
-    static void obtainAndUploadUserStories(String filePath, String sheetName, AdoRESTClient client){
-         // Carry out the data retrieval from the excel sheet
-        UserStoryExcelReader userStoryReader = new UserStoryExcelReader(filePath, sheetName);
-        // Extract the sheetData to a local list
-        List<UserStoryData> userStoryData = userStoryReader.getSheetData();
-
+    static void uploadUserStories(List<UserStoryData> userStoryData, AdoRESTClient client){
         // Add each row to dev ops
         for(UserStoryData row : userStoryData){
             // Ignore all user stories which already have an ADO ID because it means they have already been uploaded
@@ -120,6 +131,33 @@ public class Main {
         }
     }
 
+    // Method which handles the logic of obtaining all User stories from excel 
+    static List<UserStoryData> obtainUserStories(String filePath, String sheetName){
+        // Carry out the data retrieval from the excel sheet
+        UserStoryExcelReader userStoryReader = new UserStoryExcelReader(filePath, sheetName);
+        // Extract the sheetData to a local list
+        return userStoryReader.getSheetData();
+    }
+
+    // Method which handles the logic of obtaining all User stories from excel 
+    static List<FMEARiskData> obtainRisks(String filePath, String sheetName){
+        // Carry out the data retrieval from the excel sheet
+        RiskExcelReader riskReader = new RiskExcelReader(filePath, sheetName);
+        // Extract the sheetData to a local list
+        return riskReader.getSheetData();
+    }
+
+    // Method which checks user input and if appropriate to conitnue returns true
+    static boolean continueCheck(Scanner scanner){
+        System.out.printf("To continue please type y...\n");
+        String input = scanner.next().trim().toLowerCase();
+        if (!input.equals("y")) {
+            System.out.println("Operation cancelled.");
+            return false;
+        }
+        else return true;
+
+    }
 }
 
 
