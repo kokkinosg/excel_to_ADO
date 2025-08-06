@@ -24,4 +24,4 @@ hs_err_pid*
 replay_pid*
 
 # Ignore config with secrets
-/excel_to_ado/config.properties
+/excel_to_ado/src/main/resources/config.properties
