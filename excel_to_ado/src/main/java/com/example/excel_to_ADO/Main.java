@@ -66,11 +66,11 @@ public class Main {
         // Extract the sheetData to a local list
         List<FMEARiskData> riskData = riskReader.getSheetData();
 
-        System.out.printf(" There have been %d risks found.", riskData.size());
+        System.out.printf("Total number of risks found: %d\n", riskData.size());
 
         // Add each row to dev ops
         for(FMEARiskData row : riskData){
-            // Ignore all risks which already have an ADO ID because it means they are not unique
+            // Ignore all risks which already have an ADO ID because it means they have already been uploaded
             if(row.riskID()== null) {
                     // "Dependency-Reverse makes the risk a successor to the origin requirement.
                     client.createFMEARiskWI(
@@ -88,7 +88,7 @@ public class Main {
                         row.predecessorID(),
                         "Dependency-Reverse");
             } else{
-                System.out.printf("Risk ID: %d already exists. Risk not uploaded.", row.riskID());
+                System.out.printf("Risk ID: %d already exists. Risk not uploaded.\n", row.riskID());
             }
         }
             
@@ -103,8 +103,17 @@ public class Main {
 
         // Add each row to dev ops
         for(UserStoryData row : userStoryData){
-            // "Hierarchy-Reverse" is when each row is a child to the parent. 
-            client.createUserStoryWI(row.childTitle(), row.acceptanceCriteria(), row.parentId(), "Hierarchy-Reverse");
+            // Ignore all user stories which already have an ADO ID because it means they have already been uploaded
+            if(row.userStoryId()== null) {
+                // "Hierarchy-Reverse" is when each row is a child to the parent. 
+                client.createUserStoryWI(
+                    row.childTitle(), 
+                    row.acceptanceCriteria(), 
+                    row.parentId(), 
+                    "Hierarchy-Reverse");
+            } else {
+                System.out.printf("User Story ID: %d already exists. User Story not uploaded.\n", row.userStoryId());
+            }
         }
     }
 

@@ -5,7 +5,7 @@ package com.example.excel_to_ADO.Data_Structures;
 public record UserStoryData(
         Integer parentId,
         String  parentTitle,
-        Integer childId,
+        Integer userStoryId,
         String  childType,
         String  childTitle,
         String  acceptanceCriteria) {}
