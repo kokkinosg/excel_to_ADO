@@ -48,10 +48,24 @@ public class RiskExcelReader extends ExcelReader<FMEARiskData> {
                     getStr(r, 13),  // pre Occurance - N
                     getStr(r, 15),   // pre Detection - P
                     getStr(r, 19),   // Mitigation Type  - T
-                    getStr(r, 21),  // Evidence - V
+                    getStr(r, 20), // Implementation - V
+                    stripDecimalZero(getStr(r, 21)),  // Evidence - V. Also invoking the funciton to get rid of .0
                     getStr(r, 23),   // post Severity - X
                     getStr(r, 25),  // post Occurance - Z
                     getStr(r, 27)));   // post Detection - AB        
+        }
+    }
+
+    // Helper method which which strips .0 from an integer converted to a string. 
+    // Sometimes when the evidence is an ID like 15521, when converting to string it will become 15521.0. So this method will strip .0 if it exists. 
+    private String stripDecimalZero(String input) {
+        // Check if the string ends with .0. 
+        if (input.endsWith(".0")) {
+            // Return a substring which is basically all string without the last two elements .0
+            return input.substring(0, input.length() - 2);
+        } else {
+            // Otherwise just return it as it is 
+            return input;
         }
     }
     
