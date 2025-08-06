@@ -50,9 +50,11 @@ public class Main {
                 // For User Stories
                 case (1): 
                     obtainAndUploadUserStories(filePath, sheetName, client);
+                    break;
                 // For FMEA Risks
                 case (2):
                     obtainAndUploadRisks(filePath,sheetName,client);
+                    break;
                 default:
                     System.out.println("Invalid choice, run the program again.");
             }
