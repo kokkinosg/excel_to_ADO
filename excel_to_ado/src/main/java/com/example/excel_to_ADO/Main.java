@@ -66,6 +66,8 @@ public class Main {
         // Extract the sheetData to a local list
         List<FMEARiskData> riskData = riskReader.getSheetData();
 
+        System.out.printf(" There have been %d risks found.", riskData.size());
+
         // Add each row to dev ops
         for(FMEARiskData row : riskData){
             // Ignore all risks which already have an ADO ID because it means they are not unique
@@ -85,6 +87,8 @@ public class Main {
                         row.resDetection(),
                         row.predecessorID(),
                         "Dependency-Reverse");
+            } else{
+                System.out.printf("Risk ID: %d already exists. Risk not uploaded.", row.riskID());
             }
         }
             
