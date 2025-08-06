@@ -38,8 +38,9 @@ public class RiskExcelReader extends ExcelReader<FMEARiskData> {
             // Add a new record everytime to the sheetData List
             this.sheetData.add(
                 new FMEARiskData(
-                    getInt(r, 2), // Predeccessor ID - C 
-                    getStr(r, 4), // Predeccessor Title - E
+                    getInt(r, 7),  // Risk ID
+                    getInt(r, 2),  // Predeccessor ID - C 
+                    getStr(r, 4),  // Predeccessor Title - E
                     getStr(r, 8),   // Potential failure mode - I
                     getStr(r, 9),   // Potential Failure Effects - J
                     getStr(r, 10),   // Probable Cause - K

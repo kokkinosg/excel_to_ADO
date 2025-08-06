@@ -37,6 +37,7 @@ Note:
     // SUCCESSOR ("System.LinkTypes.Dependency-Reverse"),
     // PREDECCESSOR ("System.LinkTypes.Dependency-Forward");   
 - Currently, it can only create user stories and FMEA Risks  
+- It does not check if the items already exist so it will keep on creating them. Do it only once per sheet. 
 
         
 ## Project Structure

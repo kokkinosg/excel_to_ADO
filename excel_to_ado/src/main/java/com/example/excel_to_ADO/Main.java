@@ -68,22 +68,26 @@ public class Main {
 
         // Add each row to dev ops
         for(FMEARiskData row : riskData){
-            // "Dependency-Reverse makes the risk a successor to the origin requirement.
-            client.createFMEARiskWI(
-                row.title(), 
-                row.failureEffects(), 
-                row.cause(), 
-                row.preSeverity(), 
-                row.preOccurrence(), 
-                row.preDetection(), 
-                row.mitigationType(), 
-                row.evidence(), 
-                row.resSeverity(),
-                row.resOccurrence(),
-                row.resDetection(),
-                row.predecessorID(),
-                "Dependency-Reverse");
+            // Ignore all risks which already have an ADO ID because it means they are not unique
+            if(row.riskID()== null) {
+                    // "Dependency-Reverse makes the risk a successor to the origin requirement.
+                    client.createFMEARiskWI(
+                        row.title(), 
+                        row.failureEffects(), 
+                        row.cause(), 
+                        row.preSeverity(), 
+                        row.preOccurrence(), 
+                        row.preDetection(), 
+                        row.mitigationType(), 
+                        row.evidence(), 
+                        row.resSeverity(),
+                        row.resOccurrence(),
+                        row.resDetection(),
+                        row.predecessorID(),
+                        "Dependency-Reverse");
+            }
         }
+            
     }
 
     // Method which handles the logic of obtaining the User Stories from excel and uploading them to devOps.
