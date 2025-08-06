@@ -59,6 +59,7 @@ public class Main {
                     System.out.println("Invalid choice, run the program again.");
             }
         }
+        scanner.close();
     }
 
     // Method which handles the logic of obtaining the risks from excel and uploading them to devOps.
