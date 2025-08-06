@@ -30,6 +30,10 @@ public class RiskExcelReader extends ExcelReader<FMEARiskData> {
                 continue;
             }
 
+            if (isRowEmpty(r)) {
+            continue;
+            }
+
             // Add a new record everytime to the sheetData List
             this.sheetData.add(
                 new FMEARiskData(

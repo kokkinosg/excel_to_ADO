@@ -110,6 +110,22 @@ public abstract class ExcelReader <T> {
         }
     }
 
+    // Method which checks if a row is empty
+    private boolean isRowEmpty(Row row) {
+        // When there are no rows, return true. This is important because if dont check this here, row.getFirstCellNum will return -1. 
+        if (row == null) return true;
+
+        // Go over all cells in a row and check their values. Note that getLastCellNum is the last cell which exists in the row. 
+        for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
+            //return the cell with a missing cell pollicy. 
+            Cell cell = row.getCell(c, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+            // If at least one of the cells in a row is not null then it means that the row is a not blank row thus return false. 
+            if (cell != null) {
+                return false; // At least one non-blank cell
+            }
+        }
+        return true; // All cells were null or blank
+    }
     //#endregion
     
 }
