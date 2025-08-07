@@ -25,3 +25,4 @@ replay_pid*
 
 # Ignore config with secrets
 /excel_to_ado/src/main/resources/config.properties
+/excel_to_ado/target/classes/config.properties
