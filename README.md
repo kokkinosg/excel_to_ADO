@@ -39,7 +39,10 @@ Note:
 - Currently, it can only create user stories and FMEA Risks  
 - It does not check if the items already exist so it will keep on creating them. Do it only once per sheet. 
 
-        
+
+## Things to add 
+- A function which removes trailing whitespace in strings because it may mess up picklist fields on DevOps. For example "Elimination by Design " is different to "Elimination by Design". The former will be rejected if i try to upload it. 
+
 ## Project Structure
 TBD 
 

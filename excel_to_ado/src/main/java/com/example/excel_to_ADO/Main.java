@@ -40,7 +40,13 @@ public class Main {
         // Instantiate a scanner 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Welcome to the Excel to Azure Dev Ops uploaded. To upload User Stories press 1, to upload FMEA Risks press 2");
+        System.out.printf("\nWelcome to the Excel to Azure Dev Ops uploader. Before continuing, please perform the following checks on Sheet: %s.\n", sheetName);
+        System.out.println("-------------------------");
+        System.out.println("1. Ensure all columns abide by the data validation rules. No cells in a data validated column should be free text.");
+        System.out.println("2. Ensure that no columns are hidden.");
+        System.out.println("3. Ensure that all rows are empty after the last row. Try selecting 1000s rows and deleting them.");
+        System.out.println("-------------------------");
+        System.out.printf("\nTo upload User Stories press 1, to upload FMEA Risks press 2\n");
         Integer choice = scanner.nextInt();
 
         // Check whether the connection is succesfull 
@@ -52,7 +58,7 @@ public class Main {
                     // Retrieve all user stories from excel
                     List<UserStoryData> userStories = obtainUserStories(filePath, sheetName);
 
-                    System.out.printf("Total number of User Stories found: %d\n", userStories.size());
+                    System.out.printf("\nTotal number of User Stories found: %d\n", userStories.size());
                     System.out.printf("Please check that the number matches the rows in excel.\n");
 
                     if (continueCheck(scanner)){
@@ -68,12 +74,13 @@ public class Main {
                     // Obtain all risks from excel file
                     List<FMEARiskData> risks = obtainRisks(filePath,sheetName);
 
-                    System.out.printf("Total number of risks found: %d\n", risks.size());
+                    System.out.printf("\nTotal number of risks found: %d\n", risks.size());
                     System.out.printf("Please check that the number matches the rows in excel.\n");
 
                     if (continueCheck(scanner)){
                         // Upload all risks to Azure DevOps
                         uploadRisks(risks, client);
+                        System.out.printf("\nUploading FMEA risks finished. Please update excel with the work-item IDs from console\n");
                     } else {
                         System.out.println("Nothing was uploaded.");
                     }
